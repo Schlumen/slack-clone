@@ -1,5 +1,8 @@
 import { AuthScreen } from "@/features/auth/components/auth-screen";
+import React from "react";
 
-export default function Home() {
+const AuthPage = () => {
   return <AuthScreen />;
-}
+};
+
+export default AuthPage;
