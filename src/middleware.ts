@@ -12,6 +12,9 @@ export default convexAuthNextjsMiddleware(async request => {
     return nextjsMiddlewareRedirect(request, "/auth");
   }
   // TODO: Redirect user away from /auth page if they are already authenticated.
+  if (isPublicPage(request) && (await isAuthenticatedNextjs())) {
+    return nextjsMiddlewareRedirect(request, "/");
+  }
 });
 
 export const config = {
