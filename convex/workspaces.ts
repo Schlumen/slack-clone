@@ -13,7 +13,6 @@ export const create = mutation({
       throw new Error("Not authenticated");
     }
 
-    // TODO: Create a proper method later
     const joinCode = Math.random().toString(36).substring(2, 8);
 
     const workspaceId = await ctx.db.insert("workspaces", {
@@ -26,6 +25,11 @@ export const create = mutation({
       userId,
       workspaceId,
       role: "admin",
+    });
+
+    await ctx.db.insert("channels", {
+      name: "general",
+      workspaceId,
     });
 
     return workspaceId;
