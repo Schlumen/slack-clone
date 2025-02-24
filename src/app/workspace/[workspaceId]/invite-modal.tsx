@@ -71,7 +71,7 @@ export const InviteModal = ({
               Use the code below to invite people to this workspace.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col items-center justify-center py-10">
+          <div className="flex flex-col items-center justify-center py-10 gap-y-2">
             <p className="text-4xl font-bold tracking-widest uppercase">
               {joinCode}
             </p>
