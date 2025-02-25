@@ -27,6 +27,23 @@ interface EditorProps {
   variant?: "create" | "update";
 }
 
+const cleanQuillContents = (contents: Delta | undefined) => {
+  const cleanedOps = contents?.ops
+    .map(op => {
+      if (typeof op.insert === "string") {
+        // Trim spaces and remove excessive line breaks
+        const cleanedInsert = op.insert.replace(/^\s+|\s+$/g, ""); // Remove leading/trailing line breaks
+        return cleanedInsert.length > 0
+          ? { ...op, insert: cleanedInsert }
+          : null;
+      }
+      return op; // Keep non-string inserts (like images)
+    })
+    .filter(Boolean); // Remove nulls (empty strings)
+
+  return { ...contents, ops: cleanedOps };
+};
+
 const Editor = ({
   onCancel,
   onSubmit,
@@ -86,7 +103,9 @@ const Editor = ({
 
                 if (isEmpty) return;
 
-                const body = JSON.stringify(quill.getContents());
+                const body = JSON.stringify(
+                  cleanQuillContents(quill.getContents())
+                );
 
                 submitRef.current?.({ body, image: addedImage });
               },
@@ -224,7 +243,9 @@ const Editor = ({
                 disabled={disabled || isEmpty}
                 onClick={() => {
                   onSubmit({
-                    body: JSON.stringify(quillRef.current?.getContents()),
+                    body: JSON.stringify(
+                      cleanQuillContents(quillRef.current?.getContents())
+                    ),
                     image,
                   });
                 }}
@@ -252,7 +273,9 @@ const Editor = ({
               disabled={disabled || isEmpty}
               onClick={() => {
                 onSubmit({
-                  body: JSON.stringify(quillRef.current?.getContents()),
+                  body: JSON.stringify(
+                    cleanQuillContents(quillRef.current?.getContents())
+                  ),
                   image,
                 });
               }}

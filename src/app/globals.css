@@ -120,8 +120,6 @@ body,
   @apply truncate;
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -129,4 +127,9 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.messages-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #dcdcdc #f8f8f8;
 }
