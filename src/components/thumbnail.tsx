@@ -9,12 +9,12 @@ export const Thumbnail = ({ url }: ThumbnailProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <div className="relative overflow-hidden max-w-[360px] w-fit border rounded-lg my-2 cursor-zoom-in">
+      <DialogTrigger className="w-fit h-fit my-2">
+        <div className="relative overflow-hidden max-w-[360px] w-fit border rounded-lg cursor-zoom-in">
           <img
             src={url}
             alt="Message Image"
-            className="rounded-md object-contain w-auto max-h-[360px]"
+            className="rounded-md object-contain max-h-[260px]"
           />
         </div>
       </DialogTrigger>
