@@ -10,7 +10,9 @@ import { Thumbnail } from "./thumbnail";
 import { Toolbar } from "./toolbar";
 import { useUpdateMessage } from "@/features/messages/api/use-update-message";
 import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
+import { useToggleReaction } from "@/features/messages/api/use-toggle-reaction";
 import { useConfirm } from "@/hooks/use-confirm";
+import { Reactions } from "./reactions";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -72,8 +74,21 @@ export const Message = ({
     useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } =
     useRemoveMessage();
+  const { mutate: toggleReaction, isPending: isTogglingReaction } =
+    useToggleReaction();
 
   const isPending = isUpdatingMessage;
+
+  const handleReaction = (value: string) => {
+    toggleReaction(
+      { messageId: id, value },
+      {
+        onError: () => {
+          toast.error("Failed to add reaction");
+        },
+      }
+    );
+  };
 
   const handleRemove = async () => {
     const ok = await confirm();
@@ -147,6 +162,7 @@ export const Message = ({
                     (edited)
                   </span>
                 )}
+                <Reactions data={reactions} onChange={handleReaction} />
               </div>
             )}
           </div>
@@ -158,7 +174,7 @@ export const Message = ({
               handleThread={() => {}}
               handleDelete={handleRemove}
               hideThreadButton={hideThreadButton}
-              handleReaction={() => {}}
+              handleReaction={handleReaction}
             />
           )}
         </div>
@@ -216,6 +232,7 @@ export const Message = ({
               {updatedAt && (
                 <span className="text-xs text-muted-foreground">(edited)</span>
               )}
+              <Reactions data={reactions} onChange={handleReaction} />
             </div>
           )}
         </div>
@@ -227,7 +244,7 @@ export const Message = ({
             handleThread={() => {}}
             handleDelete={handleRemove}
             hideThreadButton={hideThreadButton}
-            handleReaction={() => {}}
+            handleReaction={handleReaction}
           />
         )}
       </div>
