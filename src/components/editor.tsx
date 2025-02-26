@@ -27,21 +27,28 @@ interface EditorProps {
   variant?: "create" | "update";
 }
 
-const cleanQuillContents = (contents: Delta | undefined) => {
-  const cleanedOps = contents?.ops
-    .map(op => {
-      if (typeof op.insert === "string") {
-        // Trim spaces and remove excessive line breaks
-        const cleanedInsert = op.insert.replace(/^\s+|\s+$/g, ""); // Remove leading/trailing line breaks
-        return cleanedInsert.length > 0
-          ? { ...op, insert: cleanedInsert }
-          : null;
-      }
-      return op; // Keep non-string inserts (like images)
-    })
-    .filter(Boolean); // Remove nulls (empty strings)
+const cleanQuillContents = (contents: any) => {
+  if (!contents.ops || !Array.isArray(contents.ops)) return contents;
 
-  return { ...contents, ops: cleanedOps };
+  let ops = contents.ops;
+
+  // Entferne führende Leerzeichen vom ersten "insert"
+  if (typeof ops[0]?.insert === "string") {
+    ops[0].insert = ops[0].insert.replace(/^\s+/, ""); // Entfernt nur vorne
+  }
+
+  // Entferne nachfolgende Leerzeichen vom letzten "insert"
+  const lastOpIndex = ops.length - 1;
+  if (typeof ops[lastOpIndex]?.insert === "string") {
+    ops[lastOpIndex].insert = ops[lastOpIndex].insert.replace(/\s+$/, ""); // Entfernt nur hinten
+  }
+
+  // Entferne komplett leere "insert"-Felder (nur wenn sie nach dem Trim leer sind)
+  ops = ops.filter(
+    (op: any) => !(typeof op.insert === "string" && op.insert === "")
+  );
+
+  return { ...contents, ops };
 };
 
 const Editor = ({
